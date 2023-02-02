@@ -1,15 +1,30 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import { Hero } from './data/hero';
 import { HEROES } from './data/mock-heroes';
+import { MessageService } from './message.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HeroService {
-  constructor() {}
+    constructor(private messageService: MessageService) { }
 
-  getHeroes(): Hero[] {
-    return HEROES;
-  }
+    // Observable is used for async data handling
+    // 'of' is used to return a single value from the array and store it in a var
+    getHeroes(): Observable<Hero[]> {
+        const heroes = of(HEROES);
+        this.messageService.add('HeroService: fetched heroes');
+        return heroes;
+    };
+
+    getHero(id: number): Observable<Hero> {
+        // For now, assume that a hero with the specified `id` always exists.
+        // Error handling will be added in the next step of the tutorial.
+        const hero = HEROES.find(h => h.id === id)!;
+        this.messageService.add(`HeroService: fetched hero id=${id}`);
+        return of(hero);
+    };
+    
 }
